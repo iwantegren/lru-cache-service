@@ -24,4 +24,6 @@ GET(4) // return 4
 
 `bin/` contains binaries for both linux and windows
 
+`script/` contains bash scripts for testing service
+
 `drogon/` external repository for working with REST
