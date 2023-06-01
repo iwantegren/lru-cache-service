@@ -3,6 +3,7 @@
 cd build/linux
 rm lru-cache-service
 make
+cp lru-cache-service ../../bin/linux/lru-cache-service
 
 echo "..................................................."
 
