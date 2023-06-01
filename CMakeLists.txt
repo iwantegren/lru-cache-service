@@ -5,7 +5,9 @@ project(lru-cache-service)
 add_executable(${PROJECT_NAME} 
 main.cpp
 Controller.h
-Controller.cpp)
+Controller.cpp
+Cache.h
+Cache.cpp)
 
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)

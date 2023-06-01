@@ -3,20 +3,35 @@
 #include <iostream>
 #include <string>
 
+CacheGetCtrl::CacheGetCtrl(const std::shared_ptr<LRUCache> &cache_prt)
+    : cache(cache_prt)
+{
+}
+
 void CacheGetCtrl::asyncHandleHttpRequest(const HttpRequestPtr &req,
                                           std::function<void(const HttpResponsePtr &)> &&callback)
 {
     auto response = drogon::HttpResponse::newHttpResponse();
 
-    std::cout << ">>>>>>>>>>>>>>>>>>>>>>>\n";
-    std::cout << "method: " << req->getMethodString() << std::endl;
-    // std::cout << "key: " << req->getParameter(std::string("key")) << std::endl;
-    // std::cout << "value: " << req->getParameter(std::string("value")) << std::endl;
-    auto params = req->getParameters();
-    std::cout << "params " << params.size() << std::endl;
+    std::string key_param = req->getParameter("key");
+    std::cout << "GET(" << key_param << ")\n";
 
-    response->setBody("Hello, Drogon from GET Ctrl!\n");
+    try
+    {
+        int key = std::stoi(key_param);
+        response->setBody(std::to_string(cache->get(key)));
+    }
+    catch (std::invalid_argument const &ex)
+    {
+        response->setStatusCode(k422UnprocessableEntity);
+    }
+
     callback(response);
+}
+
+CachePostCtrl::CachePostCtrl(const std::shared_ptr<LRUCache> &cache_prt)
+    : cache(cache_prt)
+{
 }
 
 void CachePostCtrl::asyncHandleHttpRequest(const HttpRequestPtr &req,
@@ -24,13 +39,21 @@ void CachePostCtrl::asyncHandleHttpRequest(const HttpRequestPtr &req,
 {
     auto response = drogon::HttpResponse::newHttpResponse();
 
-    std::cout << ">>>>>>>>>>>>>>>>>>>>>>>\n";
-    std::cout << "method: " << req->getMethodString() << std::endl;
-    // std::cout << "key: " << req->getParameter(std::string("key")) << std::endl;
-    // std::cout << "value: " << req->getParameter(std::string("value")) << std::endl;
-    auto params = req->getParameters();
-    std::cout << "params " << params.size() << std::endl;
+    std::string key_param = req->getParameter("key");
+    std::string value_param = req->getParameter("value");
 
-    response->setBody("Hello, Drogon from POST Ctrl!\n");
+    std::cout << "POST(" << key_param << ", " << value_param << ")\n";
+    try
+    {
+        int key = std::stoi(key_param);
+        int value = std::stoi(value_param);
+
+        cache->set(key, value);
+    }
+    catch (std::invalid_argument const &ex)
+    {
+        response->setStatusCode(k422UnprocessableEntity);
+    }
+
     callback(response);
 }

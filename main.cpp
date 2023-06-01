@@ -35,13 +35,12 @@ int main(int argc, char **argv)
     std::cout << "Cache capacity: " << capacity << "\n";
     std::cout << "Number of threads: " << threads << "\n";
 
-    app().setLogLevel(trantor::Logger::kWarn);
-    app().addListener(ip, port);
-    app().setThreadNum(threads);
-    // app().enableRunAsDaemon();
+    app().setLogLevel(trantor::Logger::kWarn).addListener(ip, port).setThreadNum(threads);
 
-    auto ctrl_get_ptr = std::make_shared<CacheGetCtrl>();
-    auto ctrl_post_ptr = std::make_shared<CachePostCtrl>();
+    auto cache_ptr = std::make_shared<LRUCache>(capacity);
+
+    auto ctrl_get_ptr = std::make_shared<CacheGetCtrl>(cache_ptr);
+    auto ctrl_post_ptr = std::make_shared<CachePostCtrl>(cache_ptr);
     app().registerController(ctrl_get_ptr);
     app().registerController(ctrl_post_ptr);
 
