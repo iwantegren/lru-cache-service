@@ -1,47 +1,20 @@
-Разработать REST-сервис, реализующий Least Recently Used (LRU) cache (https://en.wikipedia.org/wiki/Cache_replacement_policies#LRU)
-с максимальной вместимостью (capacity) и обрабатывающий 2 запроса:
+# LRU-cache RESTful service
 
-GET key - возвращает значение ключа, если ключ существует, иначе -1.
+This is a simple RESTful service implementing Least Recently Used (LRU) cache (https://en.wikipedia.org/wiki/Cache_replacement_policies#LRU) with maximum capacity and processing 2 requests:
+- GET(key) - returns the value of the key if the key exists in cache, otherwise -1.
+- POST (key, value) - updates the value of the key, if it exists, otherwise adds the (key, value) pair to the cache. Key-value pair is sent in JSON format.
 
-POST key, value - обновляет значение ключа, если он существует, иначе, добавляет пару key, value в cache. 
+## Example:
+```
+// Starting service with capacity 2
 
-В случае, если размер кеша превышает capacity, то из кеша удаляется пара key1, value1, которая не использовалась дольше всего и на ее место записывается key, value.
-
-Например:
-
-Запуск сервиса с максимальной вместимостью 2
-
-POST (1, 1) // кеш {1=1}
-
-POST (2, 2) // кеш {1=1, 2=2}
-
-GET(1) // вернет 1
-
-POST(3, 3) // удаление ключа 2, кеш {1=1, 3=3}
-
-GET(2) // вернет -1 (нет ключа в кеше)
-
-POST(4, 4) // удаление ключа 1, кеш {4=4, 3=3}
-
-GET(1) // вернет -1 (нет ключа в кеше)
-
-GET(3) // вернет 3
-
-GET(4) // вернет 4
-
-Ограничения и условия:
-
-- сервис необходимо реализовать на с++ с использованием одного из фреймворков(например drogon, cpprestsdk или любой другой)
-- сборочная система cmake
-- сервис должен работать под windows и linux
-- сервис должен обеспечивать потокобезопасность
-- вместимость (capacity) и число потоков передается через параметры командной строки при запуске сервиса, например ./service 5 2
-- post запрос должен быть в формате json {"key" : 1, "value" : 2}
-- необходимо выслать исходный код и бинарники с библиотеками для запуска(под win&linux)
-- ограничения не оговоренные в условии трактовать по своему усмотрению
-
-Необходимо написать набор тестов для сервиса (можно использовать bash, python, curl, postman и т.д.) или просто выполнить ручное тестирование и описать тесты словесно.
-
-drogon requires installed:
-- jsoncpp
-- boost
+POST (1, 1) // cache {1=1}
+POST (2, 2) // cache {1=1, 2=2}
+GET(1) // return 1
+POST(3, 3) // delete key 2, cache {1=1, 3=3}
+GET(2) // return -1 (no key in the cache)
+POST(4, 4) // delete key 1, cache {4=4, 3=3}
+GET(1) // return -1 (no key in the cache)
+GET(3) // return 3
+GET(4) // return 4
+```
