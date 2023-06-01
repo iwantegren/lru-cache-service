@@ -1,6 +1,5 @@
 #include "Controller.h"
 
-#include <iostream>
 #include <string>
 
 CacheGetCtrl::CacheGetCtrl(const std::shared_ptr<LRUCache> &cache_prt)
@@ -14,7 +13,6 @@ void CacheGetCtrl::asyncHandleHttpRequest(const HttpRequestPtr &req,
     auto response = drogon::HttpResponse::newHttpResponse();
 
     std::string key_param = req->getParameter("key");
-    std::cout << "GET(" << key_param << ")\n";
 
     try
     {
@@ -39,18 +37,18 @@ void CachePostCtrl::asyncHandleHttpRequest(const HttpRequestPtr &req,
 {
     auto response = drogon::HttpResponse::newHttpResponse();
 
-    std::string key_param = req->getParameter("key");
-    std::string value_param = req->getParameter("value");
-
-    std::cout << "POST(" << key_param << ", " << value_param << ")\n";
-    try
+    auto &json = req->getJsonObject();
+    if (json)
     {
-        int key = std::stoi(key_param);
-        int value = std::stoi(value_param);
+        int key = json->get("key", -1).asInt();
+        int value = json->get("value", -1).asInt();
 
-        cache->set(key, value);
+        if (key != -1 && value != -1)
+        {
+            cache->set(key, value);
+        }
     }
-    catch (std::invalid_argument const &ex)
+    else
     {
         response->setStatusCode(k422UnprocessableEntity);
     }
