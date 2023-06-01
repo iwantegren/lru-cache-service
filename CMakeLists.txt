@@ -3,11 +3,11 @@ cmake_minimum_required(VERSION 3.16.3)
 project(lru-cache-service)
 
 add_executable(${PROJECT_NAME} 
-main.cpp
-Controller.h
-Controller.cpp
-Cache.h
-Cache.cpp)
+src/main.cpp
+src/Controller.h
+src/Controller.cpp
+src/Cache.h
+src/Cache.cpp)
 
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
