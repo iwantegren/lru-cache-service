@@ -18,3 +18,10 @@ GET(1) // return -1 (no key in the cache)
 GET(3) // return 3
 GET(4) // return 4
 ```
+
+## Structure
+`src/` contains own files with C++ code including main.cpp
+
+`bin/` contains binaries for both linux and windows
+
+`drogon/` external repository for working with REST
